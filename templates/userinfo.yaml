@@ -1,0 +1,19 @@
+source_store: rdbms
+database: mol
+tables:
+  userinfo:
+    columns:
+      - name: firstname
+        type: varchar
+
+      - name: lastname
+        type: varchar
+
+      - name: dob
+        type: date
+
+      - name: contact
+        type: numeric
+
+      - name: address
+        type: varchar
