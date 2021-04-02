@@ -20,7 +20,7 @@ tables: # In this section, we define the tables, their name and schema
 
 ## Injecting extra parameters
 
-It is possible to inject database dialect parameters. For example, for redshift we can specify `redshift_diststyle` or `redshift_distkey` or any other feature supported by redshift.
+It is possible to inject database dialect parameters. For example, for [redshift](https://aws.amazon.com/redshift/) we can specify `redshift_diststyle` or `redshift_distkey` or any other feature supported by redshift.
 
 ```
 tables: 
