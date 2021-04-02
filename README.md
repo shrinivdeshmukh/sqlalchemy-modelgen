@@ -35,7 +35,7 @@ tables:
         type: varchar
 ```
 
-2. Fire a python3 in your terminal and write the following lines:
+2. Open python3 shell in your terminal and write the following lines:
 ```
 >>>from modelgen import create_model
 >>>
