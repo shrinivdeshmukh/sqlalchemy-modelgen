@@ -1,6 +1,5 @@
 alchemygen = '''from sqlalchemy import String, Integer, Boolean, Float, Numeric, DateTime, Date, Table, Column
 from sqlalchemy.ext.declarative import declarative_base
-from modelgen import constants as cst
 
 DeclarativeBase = declarative_base()
 
