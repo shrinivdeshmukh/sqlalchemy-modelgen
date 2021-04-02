@@ -7,8 +7,6 @@ key_column_length = 'length'
 key_extra_params = 'extra_params'
 key_extra_params_name = 'name'
 key_extra_params_value = 'value'
-key_src_store = 'source_store'
-key_database = 'database'
 key_inherit_from = 'inherit_from'
 
 templates_folder = path.join(getcwd(), 'templates')

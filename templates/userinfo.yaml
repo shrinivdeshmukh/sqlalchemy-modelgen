@@ -1,5 +1,3 @@
-source_store: rdbms
-database: mol
 tables:
   userinfo:
     columns:
