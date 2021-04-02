@@ -7,12 +7,12 @@ jobs:
       OS: ubuntu-latest
       PYTHON: '3.8'
     steps:
-    - uses: checkout@main
+    - uses: actions/checkout@v2
       with:
         fetch-depth: ‘2’
 
-    - name: Setup Python
-      uses: actions/setup-python@master
+    - name: sqlalchemy-modelgen
+      uses: shree14/sqlalchemy-modelgen@main
       with:
         python-version: 3.8
     - name: Generate Report
