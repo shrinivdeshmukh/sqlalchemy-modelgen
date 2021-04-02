@@ -44,3 +44,8 @@ class Helper(Base):
             finally:
                 e = None
                 del e
+
+    def write_to_file(self, path, data):
+        with open(path, 'w') as f:
+            f.write(data)
+        return True

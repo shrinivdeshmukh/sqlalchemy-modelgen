@@ -14,6 +14,6 @@ def create_model(datasource: str) -> bool:
     src_template = Template(alchemygen)
     py_code = src_template.render(yaml_data=parser.data, cst=constants, bool=bool)
     Path(constants.models_folder).mkdir(parents=True, exist_ok=True)
-    with open(f"{constants.models_folder}/{datasource}.py", 'w') as f:
-        f.write(py_code)
+    py_filepath = path.join(constants.models_folder, f'{datasource}.py')
+    h.write_to_file(path=py_filepath, data=py_code)
     return True
