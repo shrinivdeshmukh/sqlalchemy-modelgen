@@ -7,7 +7,7 @@ jobs:
       OS: ubuntu-latest
       PYTHON: '3.8'
     steps:
-    - uses: checkout@v2
+    - uses: checkout@main
       with:
         fetch-depth: ‘2’
 
