@@ -43,7 +43,7 @@ tables:
 True
 ```
 
-3. A folder named `models` will be created. In the folder, a file by the name `datasource.py` (or `userinfo.py` in this case) will be created that'll look something like this:
+3. A folder named `models` will be created. In the `models` folder, a file by the name `datasource.py` (or `userinfo.py` in this case) will be created that'll look something like this:
 
 ```
 from sqlalchemy import String, Integer, Boolean, Float, Numeric, DateTime, Date, Table, Column
