@@ -1,4 +1,10 @@
-class Helper:
+from modelgen import Base
+from yaml import safe_load, YAMLError
+
+class Helper(Base):
+
+    def __init__(self):
+        Base.__init__(self)
 
     def unpack_kwargs(self, kwargs: dict) -> str:
         """
@@ -14,3 +20,27 @@ class Helper:
         """
         stmt = ','.join((f"{a}={b}" for a, b in kwargs.items()))
         return stmt
+
+    def read_yaml(self, filepath: str) -> dict:
+        """
+        Function to read yaml and return it's contents in
+        the form of python dictionary
+
+        Args:
+            filepath (str): path where the yaml file is stored
+                            ex: './templates/file.yaml'
+        Returns:
+            (dict): Python-dictionary representation of the yaml file
+        """
+        try:
+            self.logger.info(f"Reading file {filepath} and converting it to python dict")
+            with open(filepath, 'r') as f:
+                data = safe_load(f)
+            return data
+        except YAMLError as e:
+            try:
+                self.logger.exception(e)
+                raise Exception(e)
+            finally:
+                e = None
+                del e

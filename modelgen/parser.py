@@ -1,37 +1,13 @@
-from modelgen import Base, constants as cst
-from yaml import safe_load, YAMLError
+from modelgen import constants as cst, Helper
 
-class Parser(Base):
+class Parser(Helper):
 
     def __init__(self, filepath: str):
-        Base.__init__(self)
+        Helper.__init__(self)
         self.data = self.read_yaml(filepath)
         self.tables = list(self.data[cst.key_tables].keys())
         self.schema = self.get_tables_w_columns()
 
-    def read_yaml(self, filepath: str) -> dict:
-        """
-        Function to read yaml and return it's contents in
-        the form of python dictionary
-
-        Args:
-            filepath (str): path where the yaml file is stored
-                            ex: './templates/file.yaml'
-        Returns:
-            (dict): Python-dictionary representation of the yaml file
-        """
-        try:
-            self.logger.info(f"Reading file {filepath} and converting it to python dict")
-            with open(filepath, 'r') as f:
-                data = safe_load(f)
-            return data
-        except YAMLError as e:
-            try:
-                self.logger.exception(e)
-                raise Exception(e)
-            finally:
-                e = None
-                del e
 
     def get_tables_w_columns(self) -> dict:
         self.logger.info('Creating schema from YAML')
