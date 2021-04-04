@@ -20,12 +20,13 @@ def create_model(datasource: str, alembic: bool=False) -> bool:
         create_alembic_meta(helper=h)
     return True
 
-def create_alembic_meta(helper: Helper) -> bool:
+def create_alembic_meta() -> bool:
+    h = Helper()
     alembic_template = Template(metagen)
     _, _, filenames = next(walk(constants.models_folder))
     alembic_meta = alembic_template.render(filenames=filenames, cst=constants,
                                            splitext=path.splitext)
     Path(constants.alembic_meta_folder).mkdir(parents=True, exist_ok=True)
     alembic_meta_filepath = path.join(constants.alembic_meta_folder, '__init__.py')
-    helper.write_to_file(path=alembic_meta_filepath, data=alembic_meta)
+    h.write_to_file(path=alembic_meta_filepath, data=alembic_meta)
     return True
