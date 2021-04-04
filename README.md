@@ -69,3 +69,32 @@ userinfo = Table('userinfo',
              Column('address', String),                                       
            )
 ```
+
+# Alembic Support
+
+To enable alembic support:
+1. Initialize alembic:
+  ```
+  alembic init ./scripts        # ./scripts can be any folder of your choice
+  ```
+
+2. Edit the `env.py` in the `./scripts` folder. Add the following import statement at `line 7`
+  ```
+  from modelgen.metadata import metadata
+  ```
+
+3. Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file
+
+4. Run model generation code and set `alembic=True`
+  ```
+  >>>from modelgen import create_model
+  >>>
+  >>>create_model('userinfo', alembic=True)
+  True
+  ```
+
+5. Run alembic revision and upgrade:
+  ```
+  alembic revision --autogenerate -m 'YOUR MESSAGE'
+  alembic upgrade head 
+  ```

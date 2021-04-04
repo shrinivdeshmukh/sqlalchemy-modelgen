@@ -11,7 +11,8 @@ key_inherit_from = 'inherit_from'
 
 templates_folder = path.join(getcwd(), 'templates')
 
-models_folder = path.join(getcwd(), 'models')
+models_folder = path.join(getcwd(), 'modelgen', 'models')
+alembic_meta_folder = path.join(getcwd(), 'modelgen', 'metadata')
 
 sqlalchemy_python_types = {'smallint':'SmallInteger', 'integer':'Integer',  
                            'bigint':'BigInteger',  'short':'Integer',  'long':'BigInteger', 
