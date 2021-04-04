@@ -27,7 +27,7 @@ DeclarativeBase = declarative_base()
 metagen = '''{% set import_list = [] %}\
 {% for file in filenames %}\
 {% set meta_obj = splitext(file)[0]+'_metadata' %}\
-from modelgen.models.{{ splitext(file)[0] }} import {{ meta_obj }}\
+from models.{{ splitext(file)[0] }} import {{ meta_obj }}\
 {{ import_list.append(meta_obj)|default("", True)  }}
 {% endfor %}
 metadata = [{{ import_list|join(',') }}]

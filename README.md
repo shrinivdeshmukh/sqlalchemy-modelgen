@@ -83,6 +83,8 @@ To enable alembic support:
   from modelgen.metadata import metadata
   ```
 
+  Change the variable `target_metadata = None` to `target_metadata = metadata` on `line 20`
+
 3. Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file
 
 4. Run model generation code and set `alembic=True`
