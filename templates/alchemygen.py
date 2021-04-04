@@ -12,8 +12,11 @@ DeclarativeBase = declarative_base()
     {% set column_data = schema.get(cst.key_columns) %}
 {% endif %}\
 {{ table }} = Table('{{ table }}', 
-             {{ datasource }}_metadata,{% for col in column_data %}
-             Column('{{ col[cst.key_column_name] }}', {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}),\
+             {{ datasource }}_metadata,{% for col in column_data %}\
+             {% if bool(col.get(cst.key_column_length)) %}\
+                {% set length = col.get(cst.key_column_length) %}\
+             {% endif %}
+             Column('{{ col[cst.key_column_name] }}', {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}({{ length }})),\
              {% endfor %}\
              {% if bool(schema.get(cst.key_extra_params)) %}              
                 {% for params in schema.get(cst.key_extra_params) %}
