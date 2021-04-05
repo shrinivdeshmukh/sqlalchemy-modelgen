@@ -1,6 +1,6 @@
 from modelgen.base import Base
 from modelgen.helper import Helper
-from utils import constants
+import modelgen.constants
 from templates.alchemygen import alchemygen, metagen
 from os import path, getcwd, walk
 from jinja2 import Template
@@ -17,7 +17,7 @@ def create_model(datasource: str, alembic: bool=False) -> bool:
     py_filepath = path.join(constants.models_folder, f'{datasource}.py')
     h.write_to_file(path=py_filepath, data=py_code)
     if alembic:
-        create_alembic_meta(helper=h)
+        create_alembic_meta()
     return True
 
 def create_alembic_meta() -> bool:

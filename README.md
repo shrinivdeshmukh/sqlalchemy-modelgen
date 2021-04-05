@@ -10,6 +10,8 @@ Create sqlalchemy python model files by defining tables and columns in a yaml fi
 
 `python version 3.8.8 used here`
 
+### The `docker-compose.yaml` can be used to test out the code with mysql database
+
 1. Create a python virtual environment using `virtualenv` or `conda environment`
 
 2. Run `pip install -r requirements.txt`

@@ -16,6 +16,7 @@ tables: # In this section, we define the tables, their name and schema
               type: numeric
             - name: address
               type: varchar
+              length: 200 # specify length of the column
 ```
 
 ## Injecting extra parameters
