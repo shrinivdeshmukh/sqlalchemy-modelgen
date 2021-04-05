@@ -6,6 +6,9 @@
 tables: # In this section, we define the tables, their name and schema
     userinfo: # This is the table name
         columns: # In this section, we define column names and their data types
+            - name: id
+              type: integer
+              primary_key: true   # Set this value for the primary key column
             - name: firstname # Column name
               type: varchar # Column datatype
             - name: lastname
