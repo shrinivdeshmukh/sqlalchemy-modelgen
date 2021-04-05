@@ -16,11 +16,15 @@ DeclarativeBase = declarative_base()
             {%- if bool(col.get(cst.key_column_length)) -%}
                 {% set length = col.get(cst.key_column_length) %}
             {%- endif %}
-            {% if bool(col.get(cst.key_primary_key)) -%}
-                Column('{{ col[cst.key_column_name] }}', {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}({{ length }}), primary_key=True),
-            {% else -%}
-                Column('{{ col[cst.key_column_name] }}', {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}({{ length }})),
-            {%- endif %}
+            Column('{{ col[cst.key_column_name] }}',
+                    {%- if bool(col.get(cst.key_column_length)) -%}
+                        {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}({{ col.get(cst.key_column_length) }})
+                    {%- else -%}
+                        {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}
+                    {%- endif %}
+                    {%- if bool(col.get(cst.key_primary_key)) -%}
+                        ,primary_key=True
+                    {%- endif %}),
             {%- endfor %}
             {% if bool(schema.get(cst.key_extra_params)) -%}              
                 {% for params in schema.get(cst.key_extra_params) -%}
