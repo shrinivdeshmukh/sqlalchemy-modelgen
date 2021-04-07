@@ -1,4 +1,4 @@
-alchemygen = '''from sqlalchemy import String, Integer, Boolean, Float, Numeric, DateTime, Date, Table, Column, PrimaryKeyConstraint
+alchemygen = '''from sqlalchemy import String, Integer, Boolean, Float, Numeric, DateTime, Date, Table, Column, PrimaryKeyConstraint, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
 DeclarativeBase = declarative_base()
@@ -16,11 +16,14 @@ DeclarativeBase = declarative_base()
             {%- if bool(col.get(cst.key_column_length)) -%}
                 {% set length = col.get(cst.key_column_length) %}
             {%- endif %}
-            Column('{{ col[cst.key_column_name] }}',
+            Column('{{ col[cst.key_column_name] }}'
                     {%- if bool(col.get(cst.key_column_length)) -%}
-                        {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}({{ col.get(cst.key_column_length) }})
+                        ,{{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}({{ col.get(cst.key_column_length) }})
                     {%- else -%}
-                        {{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}
+                        ,{{ cst.sqlalchemy_python_types[col[cst.key_column_type]] }}
+                    {%- endif %}
+                    {%- if bool(col.get(cst.key_foreign_key)) -%}
+                        ,ForeignKey('{{ col.get(cst.key_foreign_key) }}')
                     {%- endif %}
                     {%- if bool(col.get(cst.key_primary_key)) -%}
                         ,primary_key=True
