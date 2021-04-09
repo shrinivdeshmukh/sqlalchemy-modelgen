@@ -32,7 +32,7 @@ DeclarativeBase = declarative_base()
                         ,unique={{ col.get(cst.key_unique) }}
                     {%- endif %}
                     {%- if cst.key_nullable in col -%}
-                        , server_default="true", nullable={{ col.get(cst.key_nullable) }}
+                        ,nullable={{ col.get(cst.key_nullable) }}
                     {%- endif %}),
             {%- endfor %}
             {% if bool(schema.get(cst.key_extra_params)) -%}              
