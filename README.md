@@ -6,6 +6,52 @@
 
 Create sqlalchemy python model files by defining tables and columns in a yaml file
 
+# Run example
+
+1. Clone this repository:
+```
+ git clone git@github.com:shree14/sqlalchemy-modelgen.git
+ cd sqlalchemy-modelgen
+```
+2. Start Mysql and Adminer:
+```
+docker-compose up -d
+```
+3. Create python virtualenv and install required packages (python version >= 3.8.8):
+  ##### Using conda:
+  ```
+  conda create -n <your-env> python=3.8.8 -y
+  conda activate <your-env>
+  pip install -r requirements.txt
+  ```
+  ##### Using virtualenv:
+  ```
+  pip install virtualenv
+  virtualenv <your-env>
+  source <your-env>/bin/activate
+  <your-env>/bin/pip install -r requirements.txt
+  ```
+4. Open python shell:
+```
+# from your terminal:
+python
+>>> from modelgen import create_model
+>>> create_model('userinfo', alembic=True) 
+```
+5. Run `alembic` migrations:
+```
+alembic revision --autogenerate -m "initial migration"
+alembic upgrade head
+```
+Go to http://localhost:8080 and login with username: root and password: example <br />
+* The first screen will look like this:
+  <img src='docs/images/list_databases.png' height=75% width=75% /> <br />
+* In the above screen, click `modelgen`. The next screen will look like this: <br />
+  <img src='docs/images/list_tables.png' height=75% width=75% /> <br />
+* Click any of the two tables `(userinfo, orders)` to view their schema <br />
+
+  
+
 # Installation
 
 `python version 3.8.8 used here`
