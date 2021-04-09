@@ -8,22 +8,25 @@ Create sqlalchemy python model files by defining tables and columns in a yaml fi
 
 # Run example
 
-1. Clone this repository:
+<b> Clone this repository:</b>
 ```
  git clone git@github.com:shree14/sqlalchemy-modelgen.git
  cd sqlalchemy-modelgen
 ```
-2. Start Mysql and Adminer:
+<b> Start Mysql and Adminer:</b>
 ```
 docker-compose up -d
 ```
-3. Create python virtualenv and install required packages (python version >= 3.8.8):
+<b> Create python virtual environment and install required packages (python version >= 3.8.8):</b>
   ##### Using conda:
   ```
   conda create -n <your-env> python=3.8.8 -y
   conda activate <your-env>
   pip install -r requirements.txt
-  ```
+  ``` 
+  <br />
+  ###### OR
+  <br />
   ##### Using virtualenv:
   ```
   pip install virtualenv
@@ -31,19 +34,19 @@ docker-compose up -d
   source <your-env>/bin/activate
   <your-env>/bin/pip install -r requirements.txt
   ```
-4. Open python shell:
+<b> Open python shell:</b>
 ```
 # from your terminal:
 python
 >>> from modelgen import create_model
 >>> create_model('userinfo', alembic=True) 
 ```
-5. Run `alembic` migrations:
+<b> Run `alembic` migrations:</b>
 ```
 alembic revision --autogenerate -m "initial migration"
 alembic upgrade head
 ```
-Go to http://localhost:8080 and login with username: root and password: example <br />
+<b>Go to http://localhost:8080 and login with username: root and password: example</b> <br />
 * The first screen will look like this:
   <img src='docs/images/list_databases.png' height=75% width=75% /> <br />
 * In the above screen, click `modelgen`. The next screen will look like this: <br />
