@@ -75,29 +75,17 @@ userinfo = Table('userinfo',
 # Alembic Support
 
 To enable alembic support:
-1. Initialize alembic:
-  ```
-  alembic init ./scripts        # ./scripts can be any folder of your choice
-  ```
 
-2. Edit the `env.py` in the `./scripts` folder. Add the following import statement at `line 7`
-  ```
-  from modelgen.metadata import metadata
-  ```
+1. Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file. The line should look something like this:<br /> `sqlalchemy.url = dialect+driver://username:password@host:port/database` <br />
+  #### OR
+  Create a file `.env` in the main folder of the repository and add the following variable:
+  `DATABASE_URI=dialect+driver://username:password@host:port/database`<br />
+  ex: For MySQL specified in the `docker-compose.yaml`, the above variable will be <br />`DATABASE_URI=mysql+mysqlconnector://root:example@localhost:3306/modelgen` <br />
+  #### OR
+  In your terminal, execute the following command:<br />
+  `export DATABASE_URI=dialect+driver://username:password@host:port/database`
 
-  Change the variable `target_metadata = None` to `target_metadata = metadata` on `line 20`
-
-  Add `compare_type=True` at `line 67`, to look like this:
-  ```
-  context.configure(
-            connection=connection, target_metadata=target_metadata,
-            compare_type=True
-        )
-  ```
-
-3. Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file
-
-4. Run model generation code and set `alembic=True`
+2. Run model generation code and set `alembic=True`
   ```
   >>>from modelgen import create_model
   >>>
@@ -105,7 +93,7 @@ To enable alembic support:
   True
   ```
 
-5. Run alembic revision and upgrade:
+3. Run alembic revision and upgrade:
   ```
   alembic revision --autogenerate -m 'YOUR MESSAGE'
   alembic upgrade head 
