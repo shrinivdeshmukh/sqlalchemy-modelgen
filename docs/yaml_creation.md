@@ -8,20 +8,20 @@ tables: # In this section, we define the tables, their name and schema
         columns: # In this section, we define column names and their data types
             - name: id
               type: integer
-              primary_key: true   # Set this value for the primary key column
-            - name: firstname # Column name
-              type: varchar # Column datatype
+              primary_key: true     # Set this value for the primary key column
+            - name: firstname       # Column name
+              type: varchar         # Column datatype
             - name: lastname
               type: varchar
             - name: dob
               type: date
             - name: contact
               type: numeric
-              nullable: false/true  # Allow / disallow null values in the column, default `true`
-              unique: true/false  # Apply unique constraint for the column, default `false`
+              nullable: false/true      # Allow / disallow null values in the column, default `true`
+              unique: true/false        # Apply unique constraint for the column, default `false`
             - name: address
               type: varchar
-              length: 200 # specify length of the column
+              length: 200       # specify length of the column
 ```
 
 ## Injecting extra parameters
@@ -43,6 +43,6 @@ tables:
             - name: address
               type: varchar
         extra_params: # Here we can specify dialect specific extra parameters
-            - name: redshift_distkey # Name of the parameter
-              value: userid # Value of the parameter
+            - name: redshift_distkey        # Name of the parameter
+              value: userid                 # Value of the parameter
 ```
