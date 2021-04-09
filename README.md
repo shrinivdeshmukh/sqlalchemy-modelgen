@@ -74,6 +74,13 @@ userinfo = Table('userinfo',
 
 # Alembic Support
 
+#### Start MySQL server:
+```
+docker-compose up -d
+```
+wait for few seconds. <br />
+Go to http://localhost:8080 to view the adminer UI. To access the mysql database and the adminer UI ,the username is `root` and password is `example` 
+
 To enable alembic support:
 
 ##### 1. Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file. <br /> 
