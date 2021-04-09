@@ -18,14 +18,14 @@ Create sqlalchemy python model files by defining tables and columns in a yaml fi
 docker-compose up -d
 ```
 <b> Create python virtual environment and install required packages (python version >= 3.8.8):</b>
-  ##### Using conda:
+  ##### Option 1: Using conda:
   ```
   conda create -n <your-env> python=3.8.8 -y
   conda activate <your-env>
   pip install -r requirements.txt
   ``` 
   <b> OR </b>
-  ##### Using virtualenv:
+  ##### Option 2: Using virtualenv:
   
   ```
   pip install virtualenv
@@ -131,16 +131,17 @@ Go to http://localhost:8080 to view the adminer UI. To access the mysql database
 
 To enable alembic support:
 
-##### 1. Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file. <br /> 
+##### 1. Add sqlalchemy database url: <br />
+ Option 1: Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file. <br /> 
 The line should look something like this:<br /> `sqlalchemy.url = dialect+driver://username:password@host:port/database` <br /><br />
 ex: In the `alembic.ini` of this repo, line 42 is <br /><br />
 `sqlalchemy.url = mysql+mysqlconnector://root:example@localhost:3306/modelgen`
   ###### OR
-  Create a file `.env` in the main folder of the repository and add the following variable:
+ Option 2: Create a file `.env` in the main folder of the repository and add the following variable:
   `DATABASE_URI=dialect+driver://username:password@host:port/database`<br /><br />
   ex: For MySQL specified in the `docker-compose.yaml`, the above variable will be <br />`DATABASE_URI=mysql+mysqlconnector://root:example@localhost:3306/modelgen` <br />
   ###### OR
-  In your terminal, execute the following command:<br />
+ Option 3: In your terminal, execute the following command:<br />
   `export DATABASE_URI=dialect+driver://username:password@host:port/database`<br /><br />
   ex: `export DATABASE_URI=mysql+mysqlconnector://root:example@localhost:3306/modelgen` <br />
 
