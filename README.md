@@ -132,16 +132,16 @@ Go to http://localhost:8080 to view the adminer UI. To access the mysql database
 To enable alembic support:
 
 ##### 1. Add sqlalchemy database url: <br />
- Option 1: Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file. <br /> 
+ <b> Option 1:</b> Add your sqlalchemy(database) url at `line 42` in `alembic.ini` file. <br /> 
 The line should look something like this:<br /> `sqlalchemy.url = dialect+driver://username:password@host:port/database` <br /><br />
 ex: In the `alembic.ini` of this repo, line 42 is <br /><br />
 `sqlalchemy.url = mysql+mysqlconnector://root:example@localhost:3306/modelgen`
   ###### OR
- Option 2: Create a file `.env` in the main folder of the repository and add the following variable:
+ <b>Option 2:</b> Create a file `.env` in the main folder of the repository and add the following variable:
   `DATABASE_URI=dialect+driver://username:password@host:port/database`<br /><br />
   ex: For MySQL specified in the `docker-compose.yaml`, the above variable will be <br />`DATABASE_URI=mysql+mysqlconnector://root:example@localhost:3306/modelgen` <br />
   ###### OR
- Option 3: In your terminal, execute the following command:<br />
+ <b>Option 3:</b> In your terminal, execute the following command:<br />
   `export DATABASE_URI=dialect+driver://username:password@host:port/database`<br /><br />
   ex: `export DATABASE_URI=mysql+mysqlconnector://root:example@localhost:3306/modelgen` <br />
 
