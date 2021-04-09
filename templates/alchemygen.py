@@ -25,8 +25,14 @@ DeclarativeBase = declarative_base()
                     {%- if bool(col.get(cst.key_foreign_key)) -%}
                         ,ForeignKey('{{ col.get(cst.key_foreign_key) }}')
                     {%- endif %}
-                    {%- if bool(col.get(cst.key_primary_key)) -%}
-                        ,primary_key=True
+                    {%- if cst.key_primary_key in col -%}
+                        ,primary_key={{ col.get(cst.key_primary_key) }}
+                    {%- endif %}
+                    {%- if cst.key_unique in col -%}
+                        ,unique={{ col.get(cst.key_unique) }}
+                    {%- endif %}
+                    {%- if cst.key_nullable in col -%}
+                        , server_default="true", nullable={{ col.get(cst.key_nullable) }}
                     {%- endif %}),
             {%- endfor %}
             {% if bool(schema.get(cst.key_extra_params)) -%}              

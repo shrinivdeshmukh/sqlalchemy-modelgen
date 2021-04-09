@@ -17,6 +17,8 @@ tables: # In this section, we define the tables, their name and schema
               type: date
             - name: contact
               type: numeric
+              nullable: false/true  # Allow / disallow null values in the column, default `true`
+              unique: true/false  # Apply unique constraint for the column, default `false`
             - name: address
               type: varchar
               length: 200 # specify length of the column
