@@ -13,7 +13,7 @@ Create sqlalchemy python model files by defining tables and columns in a yaml fi
  git clone git@github.com:shree14/sqlalchemy-modelgen.git
  cd sqlalchemy-modelgen
 ```
-<b> Start Mysql and Adminer:</b>
+<b> Start MySQL and Adminer:</b>
 ```
 docker-compose up -d
 ```
