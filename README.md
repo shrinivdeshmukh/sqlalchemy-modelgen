@@ -24,10 +24,9 @@ docker-compose up -d
   conda activate <your-env>
   pip install -r requirements.txt
   ``` 
-  <br />
-  ###### OR
-  <br />
+  <b> OR </b>
   ##### Using virtualenv:
+  
   ```
   pip install virtualenv
   virtualenv <your-env>
