@@ -1,4 +1,6 @@
-alchemygen = '''from sqlalchemy import String, Integer, Boolean, Float, Numeric, DateTime, Date, Table, Column, PrimaryKeyConstraint, ForeignKey
+alchemygen = '''from sqlalchemy import (String, Integer, Boolean, Float, 
+                                Numeric, DateTime, Date, Table, Column, 
+                                PrimaryKeyConstraint, ForeignKey)
 from sqlalchemy.ext.declarative import declarative_base
 
 DeclarativeBase = declarative_base()

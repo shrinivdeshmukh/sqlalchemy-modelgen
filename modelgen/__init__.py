@@ -7,9 +7,10 @@ from jinja2 import Template
 from pathlib import Path
 from modelgen.parser import Parser
 
-def create_model(datasource: str, alembic: bool=False) -> bool:
+def create_model(datasource: str, alembic: bool=False, filepath: str=None) -> bool:
     h = Helper()
-    filepath = path.join(constants.templates_folder, f"{datasource}.yaml")
+    if not filepath:
+        filepath = path.join(constants.templates_folder, f"{datasource}.yaml")
     parser = Parser(filepath=filepath)
     src_template = Template(alchemygen)
     py_code = src_template.render(datasource=datasource,yaml_data=parser.data, cst=constants, bool=bool)
