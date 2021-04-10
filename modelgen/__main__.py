@@ -22,13 +22,14 @@ def main():
                 f_path = path.join(args.init)
             else:
                 f_path = path.join(getcwd(), args.init)
-            
-            module_src_path = path.join('/',*(__file__.split('/')[:-1]),'alembic')
+            alembic_path = path.join('/',*(__file__.split('/')[:-1]),'alembic')
+            module_src_path = alembic_path
             ini_src_path = path.join('/',*(__file__.split('/')[:-1]),'alembic.ini')
-            templates_src_path = path.join('/',*(__file__.split('/')[:-1]),'../templates')
+            templates_src_path = path.join('/',*(__file__.split('/')[:-1]),'templates')
             
             templates_dst_path = path.join(args.init, 'templates')
             Path(templates_dst_path).mkdir(parents=True, exist_ok=False)
+            Path(path.join(alembic_path,'versions')).mkdir(parents=True, exist_ok=False)
 
             copytree(module_src_path, path.join(f_path, 'alembic'))
             copyfile(ini_src_path, path.join(f_path, 'alembic.ini'))

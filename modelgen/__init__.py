@@ -1,11 +1,11 @@
-from modelgen.base import Base
-from modelgen.helper import Helper
+from .base import Base
+from .helper import Helper
 import modelgen.constants
-from templates.alchemygen import alchemygen, metagen
+from .templates.alchemygen import alchemygen, metagen
 from os import path, getcwd, walk
 from jinja2 import Template
 from pathlib import Path
-from modelgen.parser import Parser
+from .parser import Parser
 
 def create_model(datasource: str, alembic: bool=False, filepath: str=None) -> bool:
     h = Helper()
