@@ -10,16 +10,33 @@ pip install alchemy-modelgen
 
 # Usage
 
-1. Initialize alchemy-modelgen folder
+* To see the full list of options:
+```
+modelgen --help
+```
+* ##### Initialize alchemy-modelgen folder
 
 ```
 modelgen --init FOLDER_NAME
+cd FOLDER_NAME
 ```
 
-2. Create schema template
-# This document gives a high level idea of how to write the yaml schema file
+* #### Set the database URI
 
-## Structure
+The URI should follow sqlalchemy syntax.
+
+```
+export DATABASE_URI=dialect+driver://username:password@host:port/database`
+```
+
+Example: For MySQL
+```
+export DATABASE_URI=mysql+mysqlconnector://root:example@localhost:3306/modelgen
+```
+
+* ##### Create schema template
+
+Structure: 
 
 ```
 tables: # In this section, we define the tables, their name and schema
@@ -43,7 +60,7 @@ tables: # In this section, we define the tables, their name and schema
               length: 200       # specify length of the column
 ```
 
-## Injecting extra parameters
+Injecting extra parameters:
 
 It is possible to inject database dialect parameters. For example, for [redshift](https://aws.amazon.com/redshift/) we can specify `redshift_diststyle` or `redshift_distkey` or any other feature supported by redshift.
 
@@ -66,13 +83,13 @@ tables:
               value: userid                 # Value of the parameter
 ```
 
-3. Run model generation code
+* ##### Run model generation code
 
 ```
 modelgen -c path/to/yaml_schema.yaml -a
 ```
 
-4. Run alembic migrations
+* ##### Run alembic migrations
 
 ```
 alembic revision --autogenerate -m "YOUR_COMMIT_MESSAGE"
@@ -94,4 +111,20 @@ modelgen -c path/to/yaml_schema.yaml -a
 ```
 alembic revision --autogenerate -m "YOUR_COMMIT_MESSAGE"
 alembic upgrade head
+```
+
+# Read the structure of an existing database and generate the appropriate SQLAlchemy model
+
+* This functionality and code is forked from [agronholm/sqlacodegen's](https://github.com/agronholm/sqlacodegen) repository (Copyright (c) Alex Grönholm), license: [MIT License](https://github.com/agronholm/sqlacodegen/blob/master/LICENSE).
+
+* Basic Usage:
+
+```
+modelgen --source database --url mysql+mysqlconnector://user:password@host:port/db --outfile destination/path/filename.py
+```
+
+* To list the full usage:
+
+```
+modelgen --help
 ```

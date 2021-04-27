@@ -13,6 +13,7 @@ coverage==5.5
 cryptography==3.4.7
 greenlet==1.0.0
 idna==2.10
+inflect
 isodate==0.6.0
 Jinja2==2.11.3
 jmespath==0.10.0

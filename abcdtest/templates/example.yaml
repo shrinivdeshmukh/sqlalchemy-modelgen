@@ -1,0 +1,31 @@
+tables:
+  example_user_table:
+    columns:
+      - name: id
+        type: integer
+        primary_key: true 
+
+      - name: firstname
+        type: varchar
+        length: 50
+        nullable: false
+
+      - name: lastname
+        type: varchar
+        length: 50
+
+  example_meta_table:
+    columns:
+      - name: meta_id
+        type: integer
+        foreign_key: example_user_table.id
+      
+      - name: address
+        type: varchar
+        length: 250
+      
+      - name: contact
+        type: numeric
+        unique: true
+    
+

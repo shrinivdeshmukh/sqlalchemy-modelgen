@@ -52,5 +52,5 @@ metagen = '''{% set import_list = [] %}\
 from models.{{ splitext(file)[0] }} import {{ meta_obj }}\
 {{ import_list.append(meta_obj)|default("", True)  }}
 {% endfor %}
-metadata = [{{ import_list|join(',') }}]
+metadata = [{{ import_list|join(', ') }}]
 '''
