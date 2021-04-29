@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 
 templates/userinfo.yaml
+
+# vscode
+.vscode/*
+.vscode/settings.json

@@ -2,7 +2,7 @@ table_key_schema = '''
 tables:
     type: dict
     required: true
-    valueschema:
+    valuesrules:
         type: dict
         allow_unknown: true
 '''
@@ -10,7 +10,7 @@ tables:
 columns_key_schema = '''
 columns:
     type: list
-    valueschema:
+    valuesrules:
         type: dict
 '''
 

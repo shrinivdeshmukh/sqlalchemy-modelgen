@@ -1,6 +1,10 @@
 from yaml import safe_load
-from modelgen.validator.schema import table_key_schema, columns_key_schema, columns_value_schema
 from cerberus import Validator
+from typing import Union
+from modelgen.validator.schema import (table_key_schema, 
+                                       columns_key_schema, 
+                                       columns_value_schema
+                                       )
 from modelgen import Helper
 
 class Validate(Helper):
@@ -9,10 +13,6 @@ class Validate(Helper):
         Helper.__init__(self)
         self._doc = self.read_yaml(filepath)
         self.validator = Validator()
-        self._validate_table()
-        self._validate_column()
-        self._validate_column_meta()
-        
 
     def _validate_table(self):
         self.validator.validate(self._doc, safe_load(table_key_schema))
@@ -44,6 +44,12 @@ class Validate(Helper):
                 err_dict.update({table_name: err_list})
         if err_dict:
             raise ValidationError('Invalid column information', err_dict)
+
+    def validate(self):
+        self._validate_table()
+        self._validate_column()
+        self._validate_column_meta()
+        return True
 
 class ValidationError(ValueError):
     def __init__(self, message, errors):
