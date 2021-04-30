@@ -8,106 +8,90 @@ import sys
 import pkg_resources
 
 from sqlalchemy.engine import create_engine
-# from sqlalchemy.schema import MetaData
 from sqlalchemy import MetaData
 from modelgen import __file__
 from modelgen import ModelGenerator
 from sqlacodegen.codegen import CodeGenerator
 
-def msg(name=None):                                                            
-    return '''modelgen [--source SOURCE, use yaml file or use database url to create sqlalchemy model files (yaml or database)] [OPTIONS]
-
-    1. `modelgen --source yaml` usage:
-
-        [--init FOLDER_PATH, Initialize sqlalchemygen project]
-        [--createmodel, Create sqlalchemy model code] [-f, --file, path/to/the/schema_template_file.yaml] (OPTIONAL)[--alembic, If specified, alembic support will be set to True (default: False)]
-                
-        examples:
-            * modelgen --source yaml --init ./example
-            * modelgen --source yaml --createmodel -f example/templates/example.yaml (without alembic support)
-            * modelgen --source yaml --createmodel -f example/templates/example.yaml --alembic (with alembic support)
-
-    2. `modelgen --source database` usage:
-        [-u, --url, SQLAlchemy url to the database]
-        [--version, print the version number and exit]
-        [--schema, load tables from an alternate schema]
-        [--tables, tables to process (comma-separated, default: all)]
-        [--noviews, ignore views]
-        [--noindexes, ignore indexes]
-        [--noconstraints, ignore constraints]
-        [--nojoined, don't autodetect joined table inheritance]
-        [--noinflect, don't try to convert tables names to singular form]
-        [--noclasses, don't generate classes, only tables]
-        [--nocomments, don't render column comments]
-        [--outfile, file to write output to (default: stdout)]
-
-        examples: 
-            * modelgen --source database --url mysql+mysqlconnector://user:password@localhost/dbname --noviews
-            * modelgen --source database --url postgresql+psycopg2:://user:password@localhost/dbname --tables table1,table2
-            * modelgen --source database --url sqlite:///dbname.db
-
-'''
-
 def main():
-    parser = argparse.ArgumentParser(usage=msg())
+    parser = argparse.ArgumentParser()
     
-    parser.add_argument('--source', type=str, choices=['yaml', 'database'])
-    parser.add_argument("--init", type=str)
-    parser.add_argument("--createmodel", action="store_true")
-    parser.add_argument("--alembic", action="store_true")
-    parser.add_argument("-f", "--file")
+    subparsers = parser.add_subparsers(dest='command')
+    init_parser = subparsers.add_parser('init', help='initialize')
+    init_parser.add_argument('-d','--dir', nargs=1, required=True, 
+                             help='Directory where modelgen needs to be initialized')
 
-    parser.add_argument('-u', '--url', nargs='?')
-    parser.add_argument('--version', action='store_true')
-    parser.add_argument('--schema')
-    parser.add_argument('--tables')
-    parser.add_argument('--noviews', action='store_true')
-    parser.add_argument('--noindexes', action='store_true')
-    parser.add_argument('--noconstraints', action='store_true')
-    parser.add_argument('--nojoined', action='store_true')
-    parser.add_argument('--noinflect', action='store_true')
-    parser.add_argument('--noclasses', action='store_true')
-    parser.add_argument('--nocomments', action='store_true')
-    parser.add_argument('--outfile')
+    createmodel_parser = subparsers.add_parser('createmodel', help='create model')
+    createmodel_parser.add_argument('-s','--source', choices=['yaml', 'database'], 
+                                    required=True, 
+                                    help='Specify data source to create sqlalchemy model \
+                                        code from. If `yaml` is specified,\
+                                        sqlalchemy code is generated from yaml file.\
+                                        If `database` is specified, sqlalchemy is generated \
+                                        from database url specified.')
+    createmodel_parser.add_argument('-p','--path',nargs=1, 
+                                    help='yaml filepath if data source is `yaml`,\
+                                        or sqlalchemy url if data source is `database`')
+    createmodel_parser.add_argument('--version', action='store_true')
+    createmodel_parser.add_argument('--schema', help='load tables from an alternate schema')
+    createmodel_parser.add_argument('--tables', help='tables to process (comma-separated, default: all)')
+    createmodel_parser.add_argument('--noviews', action='store_true', 
+                                    help='ignore views')
+    createmodel_parser.add_argument('--noindexes', action='store_true', 
+                                    help='ignore indexes')
+    createmodel_parser.add_argument('--noconstraints', action='store_true', 
+                                    help='ignore constraints')
+    createmodel_parser.add_argument('--nojoined', action='store_true', 
+                                    help='don\'t autodetect joined table inheritance')
+    createmodel_parser.add_argument('--noinflect', action='store_true', 
+                                    help='don\'t try to convert tables names to singular form')
+    createmodel_parser.add_argument('--noclasses', action='store_true', 
+                                    help='don\'t generate classes, only tables')
+    createmodel_parser.add_argument('--nocomments', action='store_true', 
+                                    help='don\'t render column comments')
+    createmodel_parser.add_argument('--outfile', required=True, 
+                                    help='file to write output to')
+    createmodel_parser.add_argument('-a',"--alembic", action="store_true", default=False, 
+                                    help='If specified, alembic support will be \
+                                        set to True (default: False)')
     args = parser.parse_args()
+    if args.command == 'init':
+        ModelGenerator(init=args.dir[0])
+    elif args.command == 'createmodel':
+        if args.source == 'yaml':
+            ModelGenerator(createmodel=True, file=args.path[0], alembic=args.alembic)
+        elif args.source == 'database':
+            if args.version:
+                version = pkg_resources.get_distribution('sqlacodegen').parsed_version
+                return
 
-    if args.source == 'yaml':
-        if args.createmodel:
-            if not args.file:
-                print('You must supply a file path\n', file=sys.stderr)
+            db_uri = environ.get('DATABASE_URI') or args.path[0]
+            if not db_uri:
+                print('You must supply a url\n Either set DATABASE_URI in the environment or pass --url', file=sys.stderr)
                 parser.print_help()
                 return
-        ModelGenerator(args.init, args.createmodel, args.file, args.alembic)
-    elif args.source == 'database':
-        if args.version:
-            version = pkg_resources.get_distribution('sqlacodegen').parsed_version
-            print(version.public)
-            return
+            # Use reflection to fill in the metadata
+            engine = create_engine(db_uri)
+            metadata = MetaData(engine)
+            tables = args.tables.split(',') if args.tables else None
+            metadata.reflect(engine, args.schema, not args.noviews, tables)
 
-        db_uri = environ.get('DATABASE_URI', args.url)
-        if not db_uri:
-            print('You must supply a url\n Either set DATABASE_URI in the environment or pass --url', file=sys.stderr)
-            parser.print_help()
-            return
-        # Use reflection to fill in the metadata
-        engine = create_engine(db_uri)
-        metadata = MetaData(engine)
-        tables = args.tables.split(',') if args.tables else None
-        metadata.reflect(engine, args.schema, not args.noviews, tables)
+            # Write the generated model code to the specified file or standard output
+            outfile_path_args = args.outfile.split('/')
+            outfile_path = '/'.join(outfile_path_args[:-1])
+            if len(outfile_path_args) > 1 and not path.exists(outfile_path):
+                Path(outfile_path).mkdir(parents=True, exist_ok=False)
+            outfile = io.open(args.outfile, 'w', encoding='utf-8') if args.outfile else sys.stdout
+            generator = CodeGenerator(metadata, args.noindexes, args.noconstraints, args.nojoined,
+                                    args.noinflect, args.noclasses, nocomments=args.nocomments)
+            generator.render(outfile)
+            if args.alembic:
+                modelgenrtr = ModelGenerator(alembic=args.alembic)._create_alembic_meta()
 
-        # Write the generated model code to the specified file or standard output
-        outfile_path_args = args.outfile.split('/')
-        outfile_path = '/'.join(outfile_path_args[:-1])
-        if len(outfile_path_args) > 1 and not path.exists(outfile_path):
-            Path(outfile_path).mkdir(parents=True, exist_ok=False)
-        outfile = io.open(args.outfile, 'w', encoding='utf-8') if args.outfile else sys.stdout
-        generator = CodeGenerator(metadata, args.noindexes, args.noconstraints, args.nojoined,
-                                args.noinflect, args.noclasses, nocomments=args.nocomments)
-        generator.render(outfile)
-        modelgenrtr = ModelGenerator(alembic=args.alembic)._create_alembic_meta()
     else:
         print('You must supply a source\n', file=sys.stderr)
         parser.print_help()
         return
+
 if __name__ == "__main__":
     main()

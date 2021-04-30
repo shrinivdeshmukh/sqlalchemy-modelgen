@@ -41,7 +41,6 @@ def run_migrations_offline():
 
     """
     url = config.get_main_option("sqlalchemy.url")
-    print("AGGGDGDGDGDGDG_________", url)
     context.configure(
         url=url,
         target_metadata=target_metadata,

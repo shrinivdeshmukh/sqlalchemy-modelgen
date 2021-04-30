@@ -212,6 +212,7 @@ class ModelGenerator(Helper):
             else:
                 raise NameError('Please specify a .yaml or .yml file')
             self._find_checkpoint_file()
+            self.logger.info(f"Creating models at {file}")
             self._create_model(datasource=datasource, alembic=alembic)
             return True
         return None
