@@ -161,4 +161,5 @@ ex: In the `alembic.ini` of this repo, line 42 is <br /><br />
 
 # Credits
 
-* The code that reads the structure of an existing database and generates the appropriate SQLAlchemy model code is forked from [agronholm/sqlacodegen's](https://github.com/agronholm/sqlacodegen) repository (Copyright (c) Alex Grönholm), license: [MIT License](https://github.com/agronholm/sqlacodegen/blob/master/LICENSE)
+* [agronholm/sqlacodegen's](https://github.com/agronholm/sqlacodegen) repository is used 
+* The code that reads the structure of an existing database and generates the appropriate SQLAlchemy model code is based on [agronholm/sqlacodegen's](https://github.com/agronholm/sqlacodegen) repository (Copyright (c) Alex Grönholm), license: [MIT License](https://github.com/agronholm/sqlacodegen/blob/master/LICENSE)

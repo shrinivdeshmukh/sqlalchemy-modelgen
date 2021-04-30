@@ -9,5 +9,4 @@ from jinja2 import Template
 from pathlib import Path
 from .parser import Parser
 from .validator import Validate
-from .codegen import CodeGenerator
 from .modelgenerator import ModelGenerator

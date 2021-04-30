@@ -10,8 +10,9 @@ import pkg_resources
 from sqlalchemy.engine import create_engine
 # from sqlalchemy.schema import MetaData
 from sqlalchemy import MetaData
-from modelgen import __file__, CodeGenerator
+from modelgen import __file__
 from modelgen import ModelGenerator
+from sqlacodegen.codegen import CodeGenerator
 
 def msg(name=None):                                                            
     return '''modelgen [--source SOURCE, use yaml file or use database url to create sqlalchemy model files (yaml or database)] [OPTIONS]
@@ -102,7 +103,7 @@ def main():
         outfile = io.open(args.outfile, 'w', encoding='utf-8') if args.outfile else sys.stdout
         generator = CodeGenerator(metadata, args.noindexes, args.noconstraints, args.nojoined,
                                 args.noinflect, args.noclasses, nocomments=args.nocomments)
-        generator.render(outfile, args.outfile)
+        generator.render(outfile)
         modelgenrtr = ModelGenerator(alembic=args.alembic)._create_alembic_meta()
     else:
         print('You must supply a source\n', file=sys.stderr)
