@@ -16,6 +16,9 @@ class TestParser(TestCase):
 
     @mock.patch('modelgen.parser.Helper.read_yaml')
     def test_get_tables_w_columns(self, mock_ry):
+        '''
+        Test get_tables_w_columns
+        '''
         mock_ry.return_value = self.yaml
         yaml_filepath = './test.yaml'
 
