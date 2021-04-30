@@ -49,8 +49,7 @@ def main():
                                     help='don\'t generate classes, only tables')
     createmodel_parser.add_argument('--nocomments', action='store_true', 
                                     help='don\'t render column comments')
-    createmodel_parser.add_argument('--outfile', required=True, 
-                                    help='file to write output to')
+    createmodel_parser.add_argument('--outfile', help='file to write output to')
     createmodel_parser.add_argument('-a',"--alembic", action="store_true", default=False, 
                                     help='If specified, alembic support will be \
                                         set to True (default: False)')
@@ -64,7 +63,10 @@ def main():
             if args.version:
                 version = pkg_resources.get_distribution('sqlacodegen').parsed_version
                 return
-
+            if not args.outfile:
+                print('You must supply a outfile path\n', file=sys.stderr)
+                parser.print_help()
+                return
             db_uri = environ.get('DATABASE_URI') or args.path[0]
             if not db_uri:
                 print('You must supply a url\n Either set DATABASE_URI in the environment or pass --url', file=sys.stderr)

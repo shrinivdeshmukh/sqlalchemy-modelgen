@@ -5,8 +5,8 @@ setup(
     url = 'https://github.com/shree14/sqlalchemy-modelgen',
     author = 'Shrinivas Deshmukh',
     author_email = 'shrinivas.deshmukh11@gmail.com',
-    version = '12345678994',
-    packages = ['modelgen', 'modelgen.templates', 'modelgen.alembic', 'modelgen.validator'],
+    version = '0.1.4',
+    packages = ['modelgen', 'modelgen.templates', 'modelgen.alembic', 'modelgen.validator', 'modelgen.alembic.versions'],
     install_requires=[
           'alembic>=1.5.8',
           'Cerberus>=1.3.3',
@@ -17,6 +17,7 @@ setup(
           'python-dotenv>=0.17.0',
           'PyYAML>=5.4.1',
           'snowflake-sqlalchemy>=1.2.4',
+          'sqlacodegen>=2.3.0',
           'SQLAlchemy>=1.4.4',
           'sqlalchemy-redshift>=0.8.2'
       ],
@@ -29,6 +30,7 @@ setup(
           'python-dotenv>=0.17.0',
           'PyYAML>=5.4.1',
           'snowflake-sqlalchemy>=1.2.4',
+          'sqlacodegen>=2.3.0',
           'SQLAlchemy>=1.4.4',
           'sqlalchemy-redshift>=0.8.2'
       ],
