@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 DeclarativeBase = declarative_base()
 
-{{ datasource }}_metadata = DeclarativeBase.metadata\
+metadata = DeclarativeBase.metadata\
 
 {% for table, schema in yaml_data[cst.key_tables].items() %}
 {% if not bool(schema.get(cst.key_columns)) -%}
@@ -14,7 +14,7 @@ DeclarativeBase = declarative_base()
     {% set column_data = schema.get(cst.key_columns) %}
 {%- endif %}
 {{ table }} = Table('{{ table }}', 
-            {{ datasource }}_metadata,{%- for col in column_data -%}
+            metadata,{%- for col in column_data -%}
             {%- if bool(col.get(cst.key_column_length)) -%}
                 {% set length = col.get(cst.key_column_length) %}
             {%- endif %}
@@ -49,7 +49,7 @@ DeclarativeBase = declarative_base()
 metagen = '''{% set import_list = [] %}\
 {% for file in filenames %}\
 {% set meta_obj = splitext(file)[0]+'_metadata' %}\
-from models.{{ splitext(file)[0] }} import {{ meta_obj }}\
+from models.{{ splitext(file)[0] }} import metadata as {{ meta_obj }}\
 {{ import_list.append(meta_obj)|default("", True)  }}
 {% endfor %}
 metadata = [{{ import_list|join(', ') }}]

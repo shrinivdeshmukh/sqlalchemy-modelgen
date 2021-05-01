@@ -7,6 +7,7 @@ import io
 import sys
 import pkg_resources
 
+from alembic.config import main as alembic_main, CommandLine, Config
 from sqlalchemy.engine import create_engine
 from sqlalchemy import MetaData
 from modelgen import __file__
@@ -53,7 +54,13 @@ def main():
     createmodel_parser.add_argument('-a',"--alembic", action="store_true", default=False, 
                                     help='If specified, alembic support will be \
                                         set to True (default: False)')
-    args = parser.parse_args()
+
+    alembic_parser = subparsers.add_parser('migrate')
+    alembic_parser.add_argument('-p','--path',nargs=1, 
+                                    help='sqlalchemy url of the database')
+
+    args, unknown = parser.parse_known_args()
+    
     if args.command == 'init':
         ModelGenerator(init=args.dir[0])
     elif args.command == 'createmodel':
@@ -90,6 +97,10 @@ def main():
             if args.alembic:
                 modelgenrtr = ModelGenerator(alembic=args.alembic)._create_alembic_meta()
 
+    elif args.command == 'migrate':
+        db_uri = environ.get('DATABASE_URI') or args.path[0]
+        environ['DATABASE_URI'] = db_uri
+        alembic_main(unknown)
     else:
         print('You must supply a source\n', file=sys.stderr)
         parser.print_help()

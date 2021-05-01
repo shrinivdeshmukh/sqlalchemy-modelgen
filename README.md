@@ -41,9 +41,15 @@ modelgen createmodel --source database --path mysql+mysqlconnector://root:exampl
 **<li> Running alembic migrations:</li>**
 
 ```
-alembic revision --autogenerate -m "COMMIT_MESSAGE"
-alembic upgrade head
+modelgen migrate revision --autogenerate -m "COMMIT_MESSAGE" -p mysql+mysqlconnector://root:example@localhost:3306/modelgen
+
+modelgen migrate upgrade head -p mysql+mysqlconnector://root:example@localhost:3306/modelgen
 ```
+
+The arguments passed after `modelgen migrate` are based on alembic. Any command true for `alembic` can be used with `modelgen migrate`.
+
+**The database url can be passed using `-p` or `--path` argument, or can be set in the environment by the env var `DATABASE_URI`. If `DATABASE_URI` is set, `-p` or `--path` will be ignored**
+
 <br />
 
 **<li> Alter table support:</li>**
@@ -51,8 +57,9 @@ alembic upgrade head
 * Change column type, length, add contraint, etc in the yaml file. Then run:
 ```
 modelgen createmodel --source yaml --path templates/example.yaml --alembic
-alembic revision --autogenerate -m "COMMIT_MESSAGE"
-alembic upgrade head
+modelgen migrate revision --autogenerate -m "COMMIT_MESSAGE" -p mysql+mysqlconnector://root:example@localhost:3306/modelgen
+
+modelgen migrate upgrade head -p mysql+mysqlconnector://root:example@localhost:3306/modelgen
 ```
 
 <ol>

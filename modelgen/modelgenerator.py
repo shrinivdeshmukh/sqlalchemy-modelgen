@@ -87,10 +87,10 @@ class ModelGenerator(Helper):
                 dst_path = path.join(getcwd(), init)
             if path.exists(dst_path):
                 raise FileExistsError
-            alembic_path = path.join('/',*(__file__.split('/')[:-1]),'alembic')
+            alembic_path = path.join('/',*(__file__.split('/')[:-1]),'alembic_migrate')
             self.logger.info(f'Creating alembic folder at {dst_path}')
             ini_src_path = path.join('/',*(__file__.split('/')[:-1]),'alembic.ini')
-            copytree(alembic_path, path.join(dst_path, 'alembic'))
+            copytree(alembic_path, path.join(dst_path, 'alembic_migrate'))
             # Path(path.join(self.dst_path, 'alembic','versions')).mkdir(parents=True, exist_ok=False)
             copyfile(ini_src_path, path.join(dst_path, 'alembic.ini'))
             return True
