@@ -2,6 +2,7 @@
 # sqlalchemy-modelgen
 
 [![codecov](https://codecov.io/gh/shree14/sqlalchemy-modelgen/branch/main/graph/badge.svg?token=N0XQENE6IL)](https://codecov.io/gh/shree14/sqlalchemy-modelgen)
+[![PyPI](https://img.shields.io/pypi/v/alchemy-modelgen)](https://pypi.org/project/alchemy-modelgen/)
 
 
 Create sqlalchemy python model files by defining tables and columns in a yaml file or by specifying database url
