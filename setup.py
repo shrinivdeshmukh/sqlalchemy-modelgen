@@ -5,7 +5,7 @@ setup(
     url = 'https://github.com/shree14/sqlalchemy-modelgen',
     author = 'Shrinivas Deshmukh',
     author_email = 'shrinivas.deshmukh11@gmail.com',
-    version = '0.1.6',
+    version = '0.1.6.1',
     packages = ['modelgen', 'modelgen.templates', 'modelgen.alembic_migrate', 'modelgen.validator', 'modelgen.alembic_migrate.versions'],
     install_requires=[
           'alembic>=1.5.8',

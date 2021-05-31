@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>modelgen-part1.md</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="alchemy-modelgen">Alchemy modelgen</h1>
+<p><img src="https://drive.google.com/uc?export=view&amp;id=18wmRvZRs2m9M1OcCSFOHHl2cENTtH8AL" alt="this"><br>
+This is part 1 of the <code>alchemy-modelgen</code> series. In this post, we’ll explore the tool <code>alchemy-modelgen</code> and get to know the features and API’s of this tool.</p>
+<h1 id="what-is-alchemy-modelgen">What is alchemy-modelgen?</h1>
+<p><em><code>alchemy-modelgen</code> is tool which makes RDBMS (such as Redshift, PostgreSQL, Snowflake, MySQL, etc.) management easy by abstracting typical mundane tasks like writing and storing multiple sql files, modifying tables and tracking these modifications, etc.</em></p>
+<p><em><code>alchemy-modelgen</code> enables database/warehouse construction either using YAML based schema-configuration files or through replication of existing database schema. It also facilitates schema versioning and tracking, at the same time enabling time travel back to earlier versions.</em></p>
+<p><em>Underneath, <code>alchemy-modelgen</code> uses <a href="https://pypi.org/project/alembic/">alembic</a> for table creation, modification, and version management, and <a href="https://github.com/agronholm/sqlacodegen">sqlacodegen</a> for schema extraction from existing databases and warehouses.</em></p>
+<h1 id="what-is-database-migration">What is Database Migration?</h1>
+<p>Database migration refers to movement of your data structure from one platform to another.</p>
+<p>Let’s look at a typical use case for data migration. In an enterprise, the application was built on a relatively slower databases like MySQL or Postgres. But as the volume of the data grew, the process of analyzing the data became cumbersome. Inorder to tackle this, the enterprise decided to shift from MySQL to a big data handler database like <a href="https://aws.amazon.com/redshift/">AWS Redshift</a> for example.</p>
+<p>To migrate your data to redshift, we first need to migrate all the table structure from mysql to redshift. Generally, in an enterprise the number of tables are in two digits. Imagine the amount of time and precision this would require, especially when the tables have numerous columns and have contraints like primary key, unique or null contraint.</p>
+<p>Let’s take another use case. Let’s say we want to setup a data warehouse using Redshift. This could be done in many ways:</p>
+<ul>
+<li>
+<p>Create the tables manually</p>
+</li>
+<li>
+<p>Write big SQL files</p>
+</li>
+<li>
+<p>Use an ORM tool like hibernate (for java), sqlalchemy (for python)</p>
+</li>
+</ul>
+<p>In all of the above approaches, a lot of coding and maintenance is involved. Also, we need to have specialized skills to create and maintain the tables like fluency with SQL, understanding of ORM tools and so forth. And what if we need to change the structure? Let’s say we want to add or delete a column, or change the data type of a column? What happens then? What if we change the structure now, and we want to move back to the old structure? How to maintain different versions of the table structure? We’ll try to answer these question in the following sections.</p>
+<h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li>
+<p><a href="#overview">Overview</a></p>
+</li>
+<li>
+<p><a href="#api">API</a></p>
+</li>
+<li>
+<p><a href="#initializing-modelgen">Initializing modelgen</a></p>
+</li>
+<li>
+<p><a href="#defining-schema-in-yaml-file-and-registering-it-with-modelgen">Defining schema in YAML file</a></p>
+</li>
+<li>
+<p><a href="#pulling-schema-from-existing-database-or-datawarehouse">Pulling schema from existing database or datawarehouse</a></p>
+</li>
+<li>
+<p><a href="#table-creation-in-database-or-datawarehouse">Table creation in database or datawarehouse</a></p>
+</li>
+<li>
+<p><a href="#table-alteration-in-database-or-datawarehouse">Table alteration in database or datawarehouse</a></p>
+</li>
+<li>
+<p><a href="#version-maintenance-or-schema-versioning">Version maintenance or schema versioning</a></p>
+</li>
+<li>
+<p><a href="#conclusions">Conclusions</a></p>
+</li>
+</ul>
+<h1 id="overview">Overview</h1>
+<p><code>alchemy-modelgen</code> is a tool which simplifies typical database management tasks. This includes identifying tables, altering their schema, and versioning of these updates.</p>
+<p>Tables can be constructed using two approaches:</p>
+<ul>
+<li>
+<p>Specifying the database model through a YAML file including tables, columns, constraints and relationships. (YAML files are easy to write, do not require programming skills, and can be stored in any storage location (local, cloud buckets, git, etc).</p>
+</li>
+<li>
+<p>Replicating the database model of an existing database or warehouse. This is especially applicable for data migration workflows.</p>
+</li>
+</ul>
+<p>Schema changes are extremely common and typical require manual queries to be run in order to make these changes. Furthermore, recording these changes is needed in order to roll back the changes or return to a previous version of the schema. <code>alchemy-modelgen</code> handles this out of the box, preserving all iterations of the table schema and enabling roll back to any previous state.</p>
+<p>Let’s look into the usage of <code>alchemy-modelgen</code> in the following sections.</p>
+<p><strong>Note:</strong> <code>python version &gt;= 3.8 is required</code></p>
+<h1 id="api">API</h1>
+<p><code>alchemy-modelgen</code> can be installed from <code>pypi</code> using:</p>
+<pre><code>pip install alchemy-modelgen
+</code></pre>
+<p><code>modelgen</code>, a command-line utility, is included in the kit. The command <code>modelgen</code> is used to carry out all of the executions.</p>
+<h2 id="initializing-modelgen">Initializing modelgen</h2>
+<p>Before conducting any database operations, modelgen must be initialized. To begin, type the following command:</p>
+<pre><code>modelgen init -d ./modelgen_folder
+</code></pre>
+<p><code>./modelgen_folder</code> refers to the folder that modelgen will build. The folder may be assigned any name; the only requirement is that it does not already exist.</p>
+<p>(<code>./modelgen_folder</code> will be used as an example initialization folder in the following parts of this article. The folder name should be the same as the one used to initialize modelgen.)</p>
+<p>The above command results in the following folder structure:</p>
+<pre><code>modelgen_folder
+├── alembic_migrate
+│   └── __init__.py
+│   └── env.py
+│   └── script.py.mako
+│   └── versions
+│       └── __init__.py
+│   └── README
+├── templates
+│   └── example.yaml
+└── alembic.ini
+</code></pre>
+<p>The tool includes a sample YAML file that shows how to write tables, define schema, and specify constraints, among other things. The file can be found in the <code>modelgen_folder/templates/example.yaml</code> folder.</p>
+<p>The initialized directory (<code>modelgen_folder</code> in this case, essentially, <code>cd modelgen_folder</code>) should always be the working directory for all modelgen operations.</p>
+<h2 id="defining-schema-in-yaml-file-and-registering-it-with-modelgen">Defining schema in YAML file and registering it with modelgen</h2>
+<pre><code>tables: # In this section, we define the tables, their name and schema
+
+  userinfo: # This is the table name
+
+    columns: # In this section, we define column names and their data types
+
+      - name: id
+        type: integer
+        primary_key: true # Set this value for the primary key column
+
+      - name: firstname # Column name
+        type: varchar # Column datatype
+        length: 20
+
+      - name: lastname
+        type: varchar
+        length: 20
+
+      - name: dob
+        type: date
+
+      - name: contact
+        type: numeric
+        nullable: false # Allow / disallow null values in the column, default `true`
+        unique: true # Apply unique constraint for the column, default `false`
+
+      - name: address
+        type: varchar
+        length: 200 # specify length of the column
+</code></pre>
+<p>In order to register this YAML schema with modelgen, we run <code>modelgen createmodel</code> after it is specified in YAML:</p>
+<pre><code>modelgen createmodel -s yaml -p &lt;path/to/your/template.yaml&gt; -a
+</code></pre>
+<p>In the above command, the parameters <code>-s</code> , <code>-p</code> and <code>-a</code> are:</p>
+<ul>
+<li>
+<p><code>-s</code>: whether it’s a yaml file or an existing database/warehouse to read schema from, should be <code>database</code> or <code>yaml</code></p>
+</li>
+<li>
+<p><code>-p</code>: path of the YAML schema file</p>
+</li>
+<li>
+<p><code>-a</code>: enables support for database migration. It is disabled by default</p>
+</li>
+</ul>
+<p>The recommended location for the YAML file is <code>modelgen_folder/templates</code>. However, the file can be stored at any path or location.</p>
+<p>Some databases, such as <a href="https://aws.amazon.com/redshift/">AWS Redshift</a>, may have additional parameters such as diststyle, distkey, and sortkey. Please read this <a href="https://github.com/shree14/sqlalchemy-modelgen/blob/main/docs/yaml_creation.md#injecting-extra-parameters">document</a> to learn more about this advanced use.</p>
+<h2 id="pulling-schema-from-existing-database-or-datawarehouse">Pulling schema from existing database or datawarehouse</h2>
+<p>It is possible to extract the schema of all tables and views from an existing database or warehouse using modelgen. The procedure is as follows:</p>
+<ol>
+<li>Set <code>modelgen_folder</code> as current working directory:</li>
+</ol>
+<pre><code>cd modelgen_folder
+</code></pre>
+<ol start="2">
+<li>Pull schema from database/warehouse:</li>
+</ol>
+<pre><code>modelgen createmodel -s database --outfile models/&lt;FILENAME&gt;.py -p &lt;SQLALCHEMY_DATABASE_URL&gt; -a
+</code></pre>
+<p>In the above command, the parameters <code>-s</code>, <code>--outfile</code> , <code>-p</code> and <code>-a</code> are:</p>
+<ul>
+<li>
+<p><code>-s</code>: whether it’s a yaml file or an existing database/warehouse to read schema from, should be <code>database</code> or <code>yaml</code></p>
+</li>
+<li>
+<p><code>--outfile</code>: The schema from the database/warehouse should be saved in this file. <code>models/&lt;FILENAME&gt;.py</code> should always be the path, where <code>&lt;FILENAME&gt;</code> can be any name you like.</p>
+</li>
+<li>
+<p><code>-p</code>: The database/warehouse’s url. The sqlalchemy url syntax should be followed for this URL. The syntax of sqlalchemy is as follows:</p>
+</li>
+</ul>
+<p><code>database+connector://username:password@host:port/database</code></p>
+<p>Database connections supported by <code>modelgen</code> are:</p>
+<ul>
+<li>
+<p>MySQL: <code>mysql+mysqlconnector://username:password@host:port/database</code></p>
+</li>
+<li>
+<p>Postgresql: <code>postgresql+psycopg2://username:password@host:port/database</code></p>
+</li>
+<li>
+<p>Redshift: <code>redshift+psycopg2://username:password@host:port/database</code></p>
+</li>
+<li>
+<p>snowflake: <code>snowflake://username:password@account</code>, more info can be found <a href="https://github.com/snowflakedb/snowflake-sqlalchemy">here</a></p>
+</li>
+</ul>
+<h2 id="table-creation-in-database-or-datawarehouse">Table creation in database or datawarehouse</h2>
+<p>It’s time to move the schema to our actual target database/warehouse, either through the YAML file or by pulling from an existing database/warehouse. Under the hood, <code>modelgen</code> uses a migration tool called <code>alembic</code> to accomplish this.</p>
+<ul>
+<li>First, let’s make a migration revision. Revisions in migration are identical to <code>git</code> commits. Your updates are saved to the local repository using these revisions. Revisions can also be thought of as snapshots of the yaml schema written in a language that <code>modelgen</code> can understand. These revisions are saved in the <code>alembic_migrate/versions/</code> folder by modelgen.</li>
+</ul>
+<pre><code>modelgen migrate revision --autogenerate -m '&lt;COMMIT_MESSAGE&gt;' -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+<p>Depending on what the new revision is doing, the <code>&lt;COMMIT MESSAGE&gt;</code> may be contextual. If this is the first migration, the commit message may be <code>initial migration</code>, making our final command:</p>
+<pre><code>modelgen migrate revision --autogenerate -m 'initial migration' -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+<p>The parameter <code>-p</code> corresponds to the sqlalchemy URL of the target database/warehouse.</p>
+<ul>
+<li>Now the tables can be created in the target database/warehouse</li>
+</ul>
+<pre><code>modelgen migrate upgrade head -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+<ul>
+<li>The tables should now be reflected in the database/warehouse</li>
+</ul>
+<h2 id="table-alteration-in-database-or-datawarehouse">Table alteration in database or datawarehouse</h2>
+<p>The addition of a new column, modifying the datatype of a column, increasing or reducing the length of a column, or imposing or eliminating restrictions on a column are all examples of table alterations. The procedure to alter tables is:</p>
+<ol>
+<li>
+<p>Make changes in the YAML schema file</p>
+<p>Let’s take the YAML template from the earlier section of this article:</p>
+<ul>
+<li>The original template:</li>
+</ul>
+<pre><code>
+tables:
+
+  userinfo:
+    columns:
+      - name: id
+        type: integer
+        primary_key: true
+      
+      - name: firstname
+        type: varchar
+        length: 20
+        
+      - name: lastname
+        type: varchar
+        length: 20
+
+      - name: dob
+        type: date
+        
+      - name: contact
+        type: numeric
+        nullable: false
+        unique: true
+
+      - name: address
+        type: varchar
+        length: 200
+</code></pre>
+<ul>
+<li>Let’s change the length of column <code>address</code> from <code>200</code> to <code>350</code> and add a new column called <code>country</code>:</li>
+</ul>
+<pre><code>
+tables:
+  userinfo:
+    columns:
+      - name: id
+        type: integer
+        primary_key: true
+        
+      - name: firstname
+        type: varchar
+
+      - name: lastname
+        type: varchar
+
+      - name: dob
+        type: date
+
+      - name: contact
+        type: numeric
+        nullable: false
+        unique: true
+
+      - name: address
+        type: varchar
+        length: 350 # Column length changed from 200 to 350
+
+      - name: country # New column added
+        type: varchar
+        length: 20
+</code></pre>
+</li>
+<li>
+<p>Create migration revision:</p>
+<pre><code>modelgen migrate revision --autogenerate -m 'initial migration' -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+</li>
+<li>
+<p>Alter the tables in the database/warehouse:</p>
+<pre><code>modelgen migrate upgrade head -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+</li>
+</ol>
+<p>The alterations should now be reflected in the database/warehouse.</p>
+<h2 id="version-maintenance-or-schema-versioning">Version maintenance or schema versioning</h2>
+<p>Modelgen uses alembic to keep track of schema versions under the hood. To upgrade or downgrade to any old/new version, we begin by listing the versions, obtaining the version id, and then upgrading/downgrading using the version id.</p>
+<ol>
+<li>
+<p>List all the versions:</p>
+<pre><code>modelgen migrate history -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+</li>
+<li>
+<p>Get the version id:</p>
+<p>The output of the above command would look something like this:</p>
+<pre><code>787cf0fee9c1 -&gt; 16225b6adae3 (head), add new column country, change address length from 200 to 350
+
+&lt;base&gt; -&gt; 787cf0fee9c1, initial migration
+</code></pre>
+</li>
+</ol>
+<p>The id <code>787cf0fee9c1</code> refers to the older migration, while the id <code>16225b6adae3</code> refers to the most recent migration.</p>
+<p>The most recent migration is also the one that is active in the database/warehouse right now.</p>
+<p>Let’s suppose we want to go back to the edition with the id <code>787cf0fee9c1</code>. We can do so by running the following command:</p>
+<pre><code>modelgen migrate downgrade 787cf0fee9c1 -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+<p>The database/warehouse tables should now be at the same state as <code>787cf0fee9c1</code>.</p>
+<p>If we want to go back to the most recent schema version again with the id 16225b6adae3, we can use the following command:</p>
+<pre><code>modelgen migrate ugrade 16225b6adae3 -p &lt;SQLALCHEMY_DATABASE_URL&gt;
+</code></pre>
+<h2 id="conclusions">Conclusions</h2>
+<p>We looked at <code>alchemy-modelgen</code>, its functionality, and how to use it in this post. Support for more databases and warehouses will be included in future releases. Please visit the <a href="https://github.com/shree14/sqlalchemy-modelgen">GitHub repository</a> if you want to learn more or contribute to the project.</p>
+</div>
+</body>
+
+</html>
