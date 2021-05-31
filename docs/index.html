@@ -19,7 +19,7 @@ This is part 1 of the <code>alchemy-modelgen</code> series. In this post, we’l
 <h1 id="what-is-database-migration">What is Database Migration?</h1>
 <p>Database migration refers to movement of your data structure from one platform to another.</p>
 <p>Let’s look at a typical use case for data migration. In an enterprise, the application was built on a relatively slower databases like MySQL or Postgres. But as the volume of the data grew, the process of analyzing the data became cumbersome. Inorder to tackle this, the enterprise decided to shift from MySQL to a big data handler database like <a href="https://aws.amazon.com/redshift/">AWS Redshift</a> for example.</p>
-<p>To migrate your data to redshift, we first need to migrate all the table structure from mysql to redshift. Generally, in an enterprise the number of tables are in two digits. Imagine the amount of time and precision this would require, especially when the tables have numerous columns and have contraints like primary key, unique or null contraint.</p>
+<p>To migrate your data to redshift, we first need to migrate all the table structure from mysql to redshift. Generally, in an enterprise the number of tables are in two digits. Imagine the amount of time and precision this would require, especially when the tables have numerous columns and have constraints like primary key, unique or null constraint.</p>
 <p>Let’s take another use case. Let’s say we want to setup a data warehouse using Redshift. This could be done in many ways:</p>
 <ul>
 <li>
