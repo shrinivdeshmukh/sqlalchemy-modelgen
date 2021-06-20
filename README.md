@@ -1,7 +1,7 @@
 
 # sqlalchemy-modelgen
 
-[![codecov](https://codecov.io/gh/shree14/sqlalchemy-modelgen/branch/main/graph/badge.svg?token=N0XQENE6IL)](https://codecov.io/gh/shree14/sqlalchemy-modelgen)
+[![codecov](https://codecov.io/gh/shrinivdeshmukh/sqlalchemy-modelgen/branch/main/graph/badge.svg?token=N0XQENE6IL)](https://codecov.io/gh/shrinivdeshmukh/sqlalchemy-modelgen)
 [![PyPI](https://img.shields.io/pypi/v/alchemy-modelgen)](https://pypi.org/project/alchemy-modelgen/)
 
 
